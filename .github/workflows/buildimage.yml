@@ -27,39 +27,7 @@ jobs:
         run: sudo ./artix-rootfs.sh
 
       - name: Upload base image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: artix-base
-          path: artixlinux-bootstrap-*-runit-x86_64.tar.xz
-
-  kde:
-    needs: base
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download scripts
-        run: |
-          wget https://gitea.artixlinux.org/artix/artix-bootstrap/raw/branch/master/artix-bootstrap.sh
-          wget https://gitea.artixlinux.org/artix/artix-bootstrap/raw/branch/master/artix-rootfs.sh
-
-      - name: Modify bootstrap script
-        run: |
-          sed -i 's/filesystem)$/filesystem nano neovim base-devel networkmanager networkmanger-runit pipewire pipewire-alsa pipewire-pulse pipewire-jack wayland wayland-protocols wayland-utils plasma-desktop konsole kscreen kinfocenter dolphin plasma-wayland-protocols plasma-workspace-wallpapers plasma-wayland-session sddm sddm-runit sddm-kcm oxygen breeze-gtk kde-gtk-config kvantum plasma-nm plasma-pa layer-shell-qt bluez bluez-utils)/' artix-bootstrap.sh
-
-      - name: Modify rootfs script
-        run: |
-          sed -i -e "s/inits=('openrc' 'runit' 's6' 'dinit')/inits=('runit')/g; s|tar -cpzf ../artixlinux-bootstrap-\$(date +'%Y.%m.%d')-\$init-x86_64.tar.gz \*|tar -cvJpf ../artixlinux-bootstrap-\$(date +'%Y.%m.%d')-\$init-x86_64.tar.xz \*|g" artix-rootfs.sh
-
-      - name: Grant execute permission for scripts
-        run: |
-          chmod +x artix-bootstrap.sh
-          chmod +x artix-rootfs.sh
-
-      - name: Run script
-        run: sudo ./artix-rootfs.sh
-
-      - name: Upload kde image
-        uses: actions/upload-artifact@v3
-        with:
-          name: artix-kde
           path: artixlinux-bootstrap-*-runit-x86_64.tar.xz
